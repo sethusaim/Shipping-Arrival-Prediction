@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
 
-from shipping.validation_insertion.train_validation_insertion import Train_Validation
+from shipping.validation_insertion.train_validation_insertion import \
+    Train_Validation
 from utils.read_params import read_params
 
 app = FastAPI()
@@ -37,6 +38,8 @@ async def trainRouteClient():
         train_val = Train_Validation()
 
         train_val.train_validation()
+        
+        return Response("Training successfull!!")
 
     except Exception as e:
         return Response(f"Error Occurred! {e}")
