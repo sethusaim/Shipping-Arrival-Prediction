@@ -1,0 +1,24 @@
+{
+    "SampleFileName": "ship_20220906_100327.csv",
+    "LengthOfDateStampInFile": 8,
+    "LengthOfTimeStampInFile": 6,
+    "NumberofColumns": 20,
+    "ColName": {
+        "Customer Id": "string",
+        "Artist Name": "string",
+        "Artist Reputation": "float",
+        "Height": "float",
+        "Weight": "float",
+        "Material": "string",
+        "Base Shipping Price": "float",
+        "International": "string",
+        "Installation Included": "string",
+        "Transport": "string",
+        "Fragile": "string",
+        "Customer Information": "string",
+        "Remote Location": "string",
+        "Scheduled Date": "string",
+        "Delivery Date": "string",
+        "Customer Location": "string"
+    }
+}
