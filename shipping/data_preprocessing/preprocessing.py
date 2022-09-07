@@ -1,7 +1,10 @@
-import pandas as pd
+import numpy as np
+from pandas import DataFrame
+from sklearn.impute import KNNImputer
 from sklearn.preprocessing import StandardScaler
 
 from utils.logger import App_Logger
+from utils.main_utils import Main_Utils
 from utils.preprocess_utils import Preprocess_Utils
 from utils.read_params import get_log_dic, read_params
 
@@ -25,6 +28,8 @@ class Preprocessor:
             + self.config["export_csv_file"]["train"]
         )
 
+        self.null_values_file = self.config["null_values_csv_file"]
+
         self.cols_to_be_one_hot_encoded = self.config["preprocess_cols"][
             "one_hot_encode"
         ]
@@ -34,13 +39,19 @@ class Preprocessor:
         ]
 
         self.columns_to_drop = self.config["preprocess_cols"]["remove"]
+        
+        self.artifact_folder = self.config["dir"]["artifacts"]
+
+        self.knn_params = self.config["knn_imputer"]
 
         self.log_writer = App_Logger()
+        
+        self.utils = Main_Utils()
 
         self.preprocess_utils = Preprocess_Utils(self.log_file)
 
         self.st = StandardScaler()
-
+        
     def apply_one_hot_encoding(self, data):
         """
         Method Name :   apply_one_hot_encoding
@@ -64,7 +75,7 @@ class Preprocessor:
         try:
             self.log_writer.log(
                 "Applying one hot encoding to the dataframe for the particular columns",
-                **log_dic
+                **log_dic,
             )
 
             df_train = self.preprocess_utils.one_hot_encoding(
@@ -107,7 +118,7 @@ class Preprocessor:
         try:
             self.log_writer.log(
                 "Applying ordinal encoding to the dataframe for the particular columns",
-                **log_dic
+                **log_dic,
             )
 
             df_train = self.preprocess_utils.ordinal_encoding(
@@ -226,7 +237,7 @@ class Preprocessor:
 
             self.log_writer.log("Applied standard scaling on the dataframe", **log_dic)
 
-            df_train_final = pd.DataFrame(df_train_standardized, columns=data.columns)
+            df_train_final = DataFrame(df_train_standardized, columns=data.columns)
 
             self.log_writer.log(
                 "Created dataframe after applying standard scaling", **log_dic
@@ -235,6 +246,114 @@ class Preprocessor:
             self.log_writer.start_log("exit", **log_dic)
 
             return df_train_final
+
+        except Exception as e:
+            self.log_writer.exception_log(e, **log_dic)
+
+    def is_null_present(self, data):
+        log_dic = get_log_dic(
+            self.__class__.__name__,
+            self.is_null_present.__name__,
+            __file__,
+            self.log_file,
+        )
+
+        self.log_writer.start_log("start", **log_dic)
+        
+        self.null_present = False
+
+        self.cols_with_missing_values = []
+
+        self.cols = data.columns
+
+        try:
+            self.null_counts = data.isna().sum()
+
+            self.log_writer.log(f"Null values count is : {self.null_counts}", **log_dic)
+
+            for i in range(len(self.null_counts)):
+                if self.null_counts[i] > 0:
+                    self.null_present = True
+
+                    self.cols_with_missing_values.append(self.cols[i])
+
+            self.log_writer.log("created cols with missing values", **log_dic)
+            
+            self.utils.create_directory(self.artifact_folder,self.log_file)
+
+            if self.null_present:
+                self.log_writer.log(
+                    "null values were found the columns...preparing dataframe with null values",
+                    **log_dic,
+                )
+
+                self.dataframe_with_null = DataFrame()
+
+                self.dataframe_with_null["columns"] = data.columns
+
+                self.dataframe_with_null["missing values count"] = np.asarray(
+                    data.isna().sum()
+                )
+
+                self.log_writer.log("Created dataframe with null values", **log_dic)
+
+                self.dataframe_with_null.to_csv(self.null_values_file,index=None,header=True)
+
+                self.log_writer.log(
+                    "Converted null values dataframe to csv file", **log_dic
+                )
+
+            else:
+                self.log_writer.log(
+                    "No null values are present in cols. Skipped the creation of dataframe",
+                    **log_dic,
+                )
+
+            self.log_writer.start_log("exit", **log_dic)
+
+            return self.null_present
+
+        except Exception as e:
+            self.log_writer.exception_log(e, **log_dic)
+
+    def impute_missing_values(self, data):
+        """
+        Method Name :   impute_missing_values
+        Description :   This method replaces all the missing values in the dataframe using mean values of the column.
+        
+        Output      :   A dataframe which has all the missing values imputed.
+        On Failure  :   Write an exception log and then raise an exception
+        
+        Version     :   1.2
+        Revisions   :   moved setup to cloud
+        """
+        log_dic = get_log_dic(
+            self.__class__.__name__,
+            self.impute_missing_values.__name__,
+            __file__,
+            self.log_file,
+        )
+
+        self.log_writer.start_log("start", **log_dic)
+
+        try:
+            self.data = data
+
+            imputer = KNNImputer(missing_values=np.nan, **self.knn_params)
+
+            self.log_writer.log(f"Initialized {imputer.__class__.__name__}", **log_dic)
+
+            self.new_array = imputer.fit_transform(self.data)
+
+            self.new_data = DataFrame(data=self.new_array, columns=self.data.columns)
+
+            self.log_writer.log("Created new dataframe with imputed values", **log_dic)
+
+            self.log_writer.log("Imputing missing values Successful", **log_dic)
+
+            self.log_writer.start_log("exit", **log_dic)
+
+            return self.new_data
 
         except Exception as e:
             self.log_writer.exception_log(e, **log_dic)

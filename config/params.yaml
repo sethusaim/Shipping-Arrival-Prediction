@@ -24,7 +24,6 @@ data:
 knn_imputer:
   n_neighbors: 3
   weights: uniform
-  missing_values: nan
 
 kmeans_cluster:
   init: k-means++
@@ -40,6 +39,7 @@ model_dir:
 
 dir:
   log: shipping_logs
+  artifacts: shipping_artifacts
 
 model_utils:
   verbose: 3
@@ -119,11 +119,9 @@ schema_file:
   train_schema_file: config/ship_schema_training.json 
   pred_schema_file: config/ship_schema_prediction.json
 
-elbow_plot_fig: K-Means_Elbow.PNG
+null_values_csv_file: shipping_artifacts/null_values.csv
 
-null_values_csv_file: null_values.csv
-
-pred_output_file: predictions.csv
+pred_output_file: shipping_artifacts/predictions.csv
 
 regex_file: config/ship_regex.txt
 
