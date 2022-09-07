@@ -12,7 +12,6 @@ class Data_Transform_Utils:
         self.log_file = log_file
 
     def fill_mean(self, df):
-
         log_dic = get_log_dic(
             self.__class__.__name__, self.fill_mean.__name__, __file__, self.log_file
         )

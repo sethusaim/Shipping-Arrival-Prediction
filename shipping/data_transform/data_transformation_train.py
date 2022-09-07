@@ -16,9 +16,11 @@ class Data_Transform_Train:
 
         self.good_data_dir = self.config["data"]["train"]["good_data_dir"]
 
-        self.mean_to_be_filled = ["Artist Reputation", "Height", "Width", "Weight"]
+        self.mean_to_be_filled = self.config["data_transform_cols"]["mean_to_be_filled"]
 
-        self.not_available_to_be_filled = ["Transport", "Material", "Remote Location"]
+        self.not_available_to_be_filled = self.config["data_transform_cols"][
+            "not_available_to_be_filled"
+        ]
 
         self.data_transform_utils = Data_Transform_Utils(self.train_data_transform_log)
 

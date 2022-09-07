@@ -2,7 +2,7 @@ base:
   random_state: 36
   test_size: 0.33
 
-target_col: class
+target_col: Cost
 
 app:
   host: 0.0.0.0
@@ -39,7 +39,7 @@ model_dir:
   prod: production
 
 dir:
-  log: air_pressure_logs
+  log: shipping_logs
 
 model_utils:
   verbose: 3
@@ -88,6 +88,10 @@ AdaBoostClassifier:
     - 200
     - 300
 
+mongodb:
+  shipping_db_name: shipping-data
+  shipping_train_data_collection: shipping-train-data
+  shipping_pred_data_collection: shipping-pred-data
 
 log:
   model_training: model_training.log
@@ -123,6 +127,8 @@ pred_output_file: predictions.csv
 
 regex_file: config/ship_regex.txt
 
+train_input_dir: data/train_input
+
 export_csv_file:
   train: train_input_file.csv
   pred: pred_input_file.csv
@@ -136,3 +142,36 @@ log_params:
   format: "%(asctime)s;%(levelname)s;%(file_name)s;%(class_name)s;%(method_name)s;%(message)s"
   datefmt: "%H:%M:%S"
   level: INFO
+
+preprocess_cols:
+  one_hot_encode:
+    - Material
+    - Transport
+    - Customer Location
+
+  ordinal_encode:
+    - International
+    - Express Shipment
+    - Installation Included
+    - Fragile
+    - Customer Information
+    - Remote Location
+
+  remove:
+    - Customer Id
+    - Artist Name
+    - Remote Location
+    - Scheduled Date
+    - Delivery Date
+    
+data_transform_cols:
+  mean_to_be_filled:
+    - Artist Reputation
+    - Height
+    - Width
+    - Weight
+    
+  not_available_to_be_filled:
+    - Transport
+    - Material
+    - Remote Location

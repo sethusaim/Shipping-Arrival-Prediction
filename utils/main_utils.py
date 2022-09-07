@@ -1,6 +1,9 @@
+from cmath import log
 from json import load
-from os import makedirs
+from os import listdir, makedirs
 from os.path import isdir
+
+from pandas import read_csv
 
 from utils.logger import App_Logger
 from utils.read_params import get_log_dic, read_params
@@ -144,6 +147,63 @@ class Main_Utils:
             self.log_writer.log("Created folders for good and bad data", **log_dic)
 
             self.log_writer.start_log("exit", **log_dic)
+
+        except Exception as e:
+            self.log_writer.exception_log(e, **log_dic)
+
+    def read_csv_from_folder(self, folder_name, log_file):
+        """
+        Method Name :   read_csv_from_folder
+        Description :   This method reads the csv files from the folder 
+
+        Output      :   A list of dataframes is returned
+        On Failure  :   Write an exception log and then raise an exception
+
+        Version     :   1.2
+        Revisions   :   moved setup to cloud
+        """
+        log_dic = get_log_dic(
+            self.__class__.__name__,
+            self.read_csv_from_folder.__name__,
+            __file__,
+            log_file,
+        )
+
+        self.log_writer.start_log("start", **log_dic)
+
+        try:
+            csv_lst = []
+
+            self.log_writer.log("Reading csv files from folder", **log_dic)
+
+            for f in listdir(folder_name):
+                fname = folder_name + "/" + f
+
+                if fname.endswith(".csv"):
+                    df = read_csv(fname)
+
+                    self.log_writer.log(
+                        f"Read {fname} csv file from folder as dataframe", **log_dic
+                    )
+
+                    csv_lst.append(df)
+
+                    self.log_writer.log(
+                        f"Added {fname} dataframe to list of dataframes", **log_dic
+                    )
+
+                else:
+                    self.log_writer.log(
+                        f"{fname} is not a csv file, not reading it from folder"
+                    )
+
+            self.log_writer.log(
+                "Read csv files from folder and created a list of dataframes", **log_dic
+            )
+
+            self.log_writer.start_log("exit", **log_dic)
+
+            return csv_lst
 
         except Exception as e:
             self.log_writer.exception_log(e, **log_dic)

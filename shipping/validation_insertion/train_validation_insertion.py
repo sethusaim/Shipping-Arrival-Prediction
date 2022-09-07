@@ -1,7 +1,6 @@
-from shipping.data_transform.data_transformation_train import \
-    Data_Transform_Train
-from shipping.raw_data_validation.train_data_validation import \
-    Raw_Train_Data_Validation
+from shipping.data_transform.data_transformation_train import Data_Transform_Train
+from shipping.data_type_valid.data_type_valid_train import DB_Operation_Train
+from shipping.raw_data_validation.train_data_validation import Raw_Train_Data_Validation
 from utils.logger import App_Logger
 from utils.read_params import get_log_dic, read_params
 
@@ -22,9 +21,17 @@ class Train_Validation:
 
         self.train_main_log = self.config["log"]["train_main"]
 
+        self.good_data_db_name = self.config["mongodb"]["shipping_db_name"]
+
+        self.good_data_collection_name = self.config["mongodb"][
+            "shipping_train_data_collection"
+        ]
+
         self.raw_data = Raw_Train_Data_Validation()
 
         self.data_transform = Data_Transform_Train()
+
+        self.db_operation = DB_Operation_Train()
 
     def train_validation(self):
         """
@@ -47,8 +54,8 @@ class Train_Validation:
         self.log_writer.start_log("start", **log_dic)
 
         try:
-            self.log_writer.log("Train Raw Validation started",**log_dic)
-            
+            self.log_writer.log("Train Raw Validation started", **log_dic)
+
             (
                 LengthOfDateStampInFile,
                 LengthOfTimeStampInFile,
@@ -67,8 +74,8 @@ class Train_Validation:
             self.raw_data.validate_missing_values_in_col()
 
             self.log_writer.log("Train Raw Data Validation completed", **log_dic)
-            
-            self.log_writer.log("Train Data Transformation started",**log_dic)
+
+            self.log_writer.log("Train Data Transformation started", **log_dic)
 
             self.data_transform.apply_log1p_transform()
 
@@ -77,8 +84,20 @@ class Train_Validation:
             self.data_transform.apply_date_time_transformation()
 
             self.data_transform.apply_clean_weight_transformation()
-            
-            self.log_writer.log("Train Data Transformation completed",**log_dic)
+
+            self.log_writer.log("Train Data Transformation completed", **log_dic)
+
+            self.log_writer.log("Train Data Type Validation started", **log_dic)
+
+            self.db_operation.insert_good_data_as_record(
+                self.good_data_db_name, self.good_data_collection_name
+            )
+
+            self.db_operation.export_collection_to_csv(
+                self.good_data_db_name, self.good_data_collection_name
+            )
+
+            self.log_writer.log("Train Data Type Validation completed", **log_dic)
 
             self.log_writer.start_log("exit", **log_dic)
 
