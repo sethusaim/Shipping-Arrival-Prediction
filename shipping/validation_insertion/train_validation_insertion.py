@@ -47,6 +47,8 @@ class Train_Validation:
         self.log_writer.start_log("start", **log_dic)
 
         try:
+            self.log_writer.log("Train Raw Validation started",**log_dic)
+            
             (
                 LengthOfDateStampInFile,
                 LengthOfTimeStampInFile,
@@ -64,7 +66,9 @@ class Train_Validation:
 
             self.raw_data.validate_missing_values_in_col()
 
-            self.log_writer.log("Raw Data Validation Completed !!", **log_dic)
+            self.log_writer.log("Train Raw Data Validation completed", **log_dic)
+            
+            self.log_writer.log("Train Data Transformation started",**log_dic)
 
             self.data_transform.apply_log1p_transform()
 
@@ -73,6 +77,8 @@ class Train_Validation:
             self.data_transform.apply_date_time_transformation()
 
             self.data_transform.apply_clean_weight_transformation()
+            
+            self.log_writer.log("Train Data Transformation completed",**log_dic)
 
             self.log_writer.start_log("exit", **log_dic)
 
