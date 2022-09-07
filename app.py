@@ -1,8 +1,8 @@
-import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from fastapi.templating import Jinja2Templates
+from uvicorn import run as run_app
 
 from shipping.validation_insertion.train_validation_insertion import \
     Train_Validation
@@ -46,8 +46,6 @@ async def trainRouteClient():
 
 
 if __name__ == "__main__":
-    host = config["app"]["host"]
-
-    port = config["app"]["port"]
-
-    uvicorn.run(app, host=host, port=port)
+    app_config = config["app"]
+    
+    run_app(app,**app_config)
