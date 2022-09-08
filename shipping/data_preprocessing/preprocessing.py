@@ -30,6 +30,8 @@ class Preprocessor:
 
         self.null_values_file = self.config["null_values_csv_file"]
 
+        self.target_col = self.config["target_col"]
+
         self.cols_to_be_one_hot_encoded = self.config["preprocess_cols"][
             "one_hot_encode"
         ]
@@ -356,6 +358,48 @@ class Preprocessor:
             self.log_writer.start_log("exit", **log_dic)
 
             return self.new_data
+
+        except Exception as e:
+            self.log_writer.exception_log(e, **log_dic)
+
+    def remove_target_column(self, data):
+        """
+        Method Name :   remove_target_column
+        Description :   This method removes the target column in the dataframe
+        
+        Output      :   A target column has been removed from the dataframe
+        On Failure  :   Write an exception log and then raise an exception
+        
+        Version     :   1.2
+        Revisions   :   moved setup to cloud
+        """
+        log_dic = get_log_dic(
+            self.__class__.__name__,
+            self.remove_target_column.__name__,
+            __file__,
+            self.log_file,
+        )
+
+        self.log_writer.start_log("start", **log_dic)
+
+        try:
+            self.log_writer.log("Removing target column from the dataframe", **log_dic)
+
+            new_order = list(data.columns)
+
+            new_order.remove(self.target_col)
+
+            self.log_writer.log("Removed target column from the dataframe", **log_dic)
+
+            data = data.reindex(columns=new_order)
+
+            self.log_writer.log(
+                "Reindex the dataframe based on the new order", **log_dic
+            )
+
+            self.log_writer.start_log("exit", **log_dic)
+
+            return data
 
         except Exception as e:
             self.log_writer.exception_log(e, **log_dic)

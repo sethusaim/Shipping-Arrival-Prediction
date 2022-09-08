@@ -18,8 +18,8 @@ data:
     bad_data_dir: data/bad/train
 
   pred:
-    good_data_dir: good/pred
-    bad_data_dir: bad/pred
+    good_data_dir: data/good/pred
+    bad_data_dir: data/bad/pred
 
 knn_imputer:
   n_neighbors: 3
@@ -123,6 +123,8 @@ pred_output_file: shipping_artifacts/predictions.csv
 regex_file: config/ship_regex.txt
 
 train_input_dir: data/train_input
+
+pred_input_dir: data/pred_input
 
 export_csv_file:
   train: train_input_file.csv

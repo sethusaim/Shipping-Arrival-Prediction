@@ -154,7 +154,7 @@ class Raw_Train_Data_Validation:
         self.log_writer.start_log("start", **log_dic)
 
         try:
-            self.utils.create_dirs_for_good_bad_data(self.train_name_valid_log)
+            self.utils.create_dirs_for_good_bad_data("train", self.train_name_valid_log)
 
             onlyfiles = [f for f in listdir(self.raw_train_data_dir)]
 

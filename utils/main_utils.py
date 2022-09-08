@@ -15,10 +15,6 @@ class Main_Utils:
 
         self.config = read_params()
 
-        self.good_data_dir = self.config["data"]["train"]["good_data_dir"]
-
-        self.bad_data_dir = self.config["data"]["train"]["bad_data_dir"]
-
     def read_json(self, file, log_file):
         """
         Method Name :   read_json
@@ -117,7 +113,7 @@ class Main_Utils:
         except Exception as e:
             self.log_writer.exception_log(e, **log_dic)
 
-    def create_dirs_for_good_bad_data(self, log_file):
+    def create_dirs_for_good_bad_data(self, key, log_file):
         """
         Method Name :   create_dirs_for_good_bad_data
         Description :   This method creates good and bad data folders 
@@ -139,6 +135,10 @@ class Main_Utils:
 
         try:
             self.log_writer.log("Creating folders for good and bad data", **log_dic)
+
+            self.good_data_dir = self.config["data"][key]["good_data_dir"]
+
+            self.bad_data_dir = self.config["data"][key]["bad_data_dir"]
 
             self.create_directory(self.good_data_dir, log_file)
 

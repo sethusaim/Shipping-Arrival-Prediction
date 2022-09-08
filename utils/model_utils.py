@@ -1,4 +1,4 @@
-from cmath import log
+from os import listdir
 from os.path import join
 from pickle import dump, load
 
@@ -260,7 +260,7 @@ class Model_Utils:
         except Exception as e:
             self.log_writer.exception_log(e, **log_dic)
 
-    def load_model(self, model_dir, filename, log_file):
+    def load_model(self, model_file, log_file):
         """
         Method Name :   load_model
         Description :   This method loads the model from the particular folder
@@ -278,16 +278,12 @@ class Model_Utils:
         self.log_writer.start_log("start", **log_dic)
 
         try:
-            self.log_writer.log(
-                f"Loading {filename} model from {model_dir} model folder", **log_dic
-            )
+            self.log_writer.log(f"Loading {model_file} model", **log_dic)
 
-            with open(model_dir + "/" + filename + self.save_format, "rb") as f:
+            with open(model_file, "rb") as f:
                 model = load(f)
 
-            self.log_writer.log(
-                f"Loaded {filename} model from {model_dir} folder", **log_dic
-            )
+            self.log_writer.log(f"Loaded {model_file} model", **log_dic)
 
             self.log_writer.start_log("exit", **log_dic)
 
@@ -410,6 +406,46 @@ class Model_Utils:
             self.log_writer.start_log("exit", **log_dic)
 
             return model_file
+
+        except Exception as e:
+            self.log_writer.exception_log(e, **log_dic)
+
+    def get_prod_model_file(self, log_file):
+        """
+        Method Name :   get_prod_model_name
+        Description :   This method gets the prod model name for getting predictions
+
+        Output      :   Prod model name is returned for getting predictions
+        On Failure  :   Write an exception log and then raise an exception
+
+        Version     :   1.2
+        Revisions   :   moved setup to cloud
+        """
+        log_dic = get_log_dic(
+            self.__class__.__name__,
+            self.get_prod_model_file.__name__,
+            __file__,
+            log_file,
+        )
+
+        self.log_writer.start_log("start", **log_dic)
+
+        try:
+            self.log_writer.log("Getting prod model name for prediction", **log_dic)
+
+            prod_model_dir = (
+                self.config["dir"]["artifacts"] + "/" + self.config["model_dir"]["prod"]
+            )
+
+            model_name = listdir(prod_model_dir)[0].split(".")[0]
+
+            model_name = prod_model_dir + "/" + model_name + self.save_format
+
+            self.log_writer.log("Got the prod model name for prediction", **log_dic)
+
+            self.log_writer.start_log("exit", **log_dic)
+
+            return model_name
 
         except Exception as e:
             self.log_writer.exception_log(e, **log_dic)
