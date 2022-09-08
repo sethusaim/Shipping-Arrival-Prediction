@@ -318,7 +318,7 @@ class Model_Utils:
                 **log_dic,
             )
 
-            min_score_model_name = min(lst)[2]
+            min_score_model_name = max(lst)[2]
 
             self.log_writer.log(
                 "Got the best model name from list of tuple of model name and model score",
