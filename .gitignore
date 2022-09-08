@@ -8,6 +8,12 @@ __pycache__/
 
 demotest.py
 
+data
+
+shipping_artifacts
+
+shipping_logs
+
 # Distribution / packaging
 .Python
 build/
