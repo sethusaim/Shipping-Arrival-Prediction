@@ -1,5 +1,6 @@
 from shipping.data_ingestion.data_loader_train import Data_Getter_Train
 from shipping.data_preprocessing.preprocessing import Preprocessor
+from shipping.model_finder.tuner import Model_Finder
 from utils.logger import App_Logger
 from utils.read_params import get_log_dic, read_params
 
@@ -9,14 +10,16 @@ class Train_Model:
         self.config = read_params()
 
         self.model_train_log = self.config["log"]["model_training"]
-        
+
         self.target_col = self.config["target_col"]
-        
+
         self.log_writer = App_Logger()
 
         self.data_getter_train = Data_Getter_Train(self.model_train_log)
 
         self.preprocessor = Preprocessor(self.model_train_log)
+
+        self.tuner = Model_Finder(self.model_train_log)
 
     def training_model(self):
         """
@@ -59,9 +62,13 @@ class Train_Model:
 
             X = self.preprocessor.apply_standard_scaler(X)
 
+            lst = self.tuner.train_and_save_models(X, Y)
+
             self.log_writer.log("Finished model training", **log_dic)
 
             self.log_writer.start_log("exit", **log_dic)
+
+            return lst
 
         except Exception as e:
             self.log_writer.exception_log(e, **log_dic)

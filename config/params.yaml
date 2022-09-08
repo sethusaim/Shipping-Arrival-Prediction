@@ -33,9 +33,9 @@ kmeans_cluster:
     direction: decreasing
 
 model_dir:
-  trained: trained
-  stag: staging
-  prod: production
+  trained: trained_models
+  stag: staging_models
+  prod: production_models
 
 dir:
   log: shipping_logs
@@ -48,45 +48,42 @@ model_utils:
 
 save_format: .sav
 
-RandomForestClassifier:
-  n_estimators:
-    - 10
-    - 50
-    - 100
-    - 130
+train_model:
+  RandomForestRegressor:
+    n_estimators:
+      - 10
+      - 50
+      - 100
+      - 130
+      
+    max_features:
+      - auto
+      - log2
 
-  criterion:
-    - gini
-    - entropy
+    max_depth:
+      - 2
+      - 3
+      - 4
+      - 5
 
-  max_features:
-    - auto
-    - log2
+  AdaBoostRegressor:
+    n_estimators:
+      - 10
+      - 50
+      - 100
+      - 130
 
-  max_depth:
-    - 2
-    - 3
-    - 4
-    - 5
+    learning_rate:
+      - 0.5
+      - 0.1
+      - 0.01
+      - 0.001
 
-AdaBoostClassifier:
-  n_estimators:
-    - 10
-    - 50
-    - 100
-    - 130
-
-  learning_rate:
-    - 0.5
-    - 0.1
-    - 0.01
-    - 0.001
-
-  random_state:
-    - 0
-    - 100
-    - 200
-    - 300
+    random_state:
+      - 0
+      - 100
+      - 200
+      - 300
 
 mongodb:
   shipping_db_name: shipping-data

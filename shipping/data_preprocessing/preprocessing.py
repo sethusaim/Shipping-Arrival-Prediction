@@ -39,19 +39,19 @@ class Preprocessor:
         ]
 
         self.columns_to_drop = self.config["preprocess_cols"]["remove"]
-        
+
         self.artifact_folder = self.config["dir"]["artifacts"]
 
         self.knn_params = self.config["knn_imputer"]
 
         self.log_writer = App_Logger()
-        
+
         self.utils = Main_Utils()
 
         self.preprocess_utils = Preprocess_Utils(self.log_file)
 
         self.st = StandardScaler()
-        
+
     def apply_one_hot_encoding(self, data):
         """
         Method Name :   apply_one_hot_encoding
@@ -259,7 +259,7 @@ class Preprocessor:
         )
 
         self.log_writer.start_log("start", **log_dic)
-        
+
         self.null_present = False
 
         self.cols_with_missing_values = []
@@ -278,8 +278,8 @@ class Preprocessor:
                     self.cols_with_missing_values.append(self.cols[i])
 
             self.log_writer.log("created cols with missing values", **log_dic)
-            
-            self.utils.create_directory(self.artifact_folder,self.log_file)
+
+            self.utils.create_directory(self.artifact_folder, self.log_file)
 
             if self.null_present:
                 self.log_writer.log(
@@ -297,7 +297,9 @@ class Preprocessor:
 
                 self.log_writer.log("Created dataframe with null values", **log_dic)
 
-                self.dataframe_with_null.to_csv(self.null_values_file,index=None,header=True)
+                self.dataframe_with_null.to_csv(
+                    self.null_values_file, index=None, header=True
+                )
 
                 self.log_writer.log(
                     "Converted null values dataframe to csv file", **log_dic

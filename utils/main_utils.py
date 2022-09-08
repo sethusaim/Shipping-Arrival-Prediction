@@ -207,3 +207,44 @@ class Main_Utils:
 
         except Exception as e:
             self.log_writer.exception_log(e, **log_dic)
+
+    def create_model_folders(self, log_file):
+        """
+        Method Name :   create_model_folders
+        Description :   This method creates the model folders for train,stag and prod
+
+        Output      :   Model folders are created
+        On Failure  :   Write an exception log and then raise an exception
+
+        Version     :   1.2
+        Revisions   :   moved setup to cloud
+        """
+        log_dic = get_log_dic(
+            self.__class__.__name__,
+            self.create_model_folders.__name__,
+            __file__,
+            log_file,
+        )
+
+        self.log_writer.start_log("start", **log_dic)
+
+        try:
+            self.log_writer.log("Creating model folders", **log_dic)
+
+            folders = list(self.config["model_dir"].values())
+
+            self.log_writer.log("Got a list of model folders to create", **log_dic)
+
+            [
+                self.create_directory(
+                    self.config["dir"]["artifacts"] + "/" + f, log_file
+                )
+                for f in folders
+            ]
+
+            self.log_writer.log("Created model folders", **log_dic)
+
+            self.log_writer.start_log("exit", **log_dic)
+
+        except Exception as e:
+            self.log_writer.exception_log(e, **log_dic)
