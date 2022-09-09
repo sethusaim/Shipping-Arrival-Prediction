@@ -7,7 +7,7 @@ In this data science project, you will build a machine learning system which wil
 Now the question is how to dynamically predict prices of the particular shipment ?. One of the approaches which we can use of machine learning approach, where we can predict the shipping price based on the domain knowledge and leverage previous shipment data to predict the prices. 
 
 
-# Tech Stack Used
+## Tech Stack Used
 1. Python 
 2. FastAPI 
 3. Machine learning algorithms
