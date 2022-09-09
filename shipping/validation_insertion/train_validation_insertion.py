@@ -1,6 +1,8 @@
-from shipping.data_transform.data_transformation_train import Data_Transform_Train
+from shipping.data_transform.data_transformation_train import \
+    Data_Transform_Train
 from shipping.data_type_valid.data_type_valid_train import DB_Operation_Train
-from shipping.raw_data_validation.train_data_validation import Raw_Train_Data_Validation
+from shipping.raw_data_validation.train_data_validation import \
+    Raw_Train_Data_Validation
 from utils.logger import App_Logger
 from utils.read_params import get_log_dic, read_params
 
