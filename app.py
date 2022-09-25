@@ -9,10 +9,10 @@ from uvicorn import run as run_app
 from shipping.model.load_production_model import Load_Prod_Model
 from shipping.model.predict_from_model import Prediction
 from shipping.model.training_model import Train_Model
-from shipping.validation_insertion.prediction_validation_insertion import \
-    Pred_Validation
-from shipping.validation_insertion.train_validation_insertion import \
-    Train_Validation
+from shipping.validation_insertion.prediction_validation_insertion import (
+    Pred_Validation,
+)
+from shipping.validation_insertion.train_validation_insertion import Train_Validation
 from utils.read_params import read_params
 
 app = FastAPI()
